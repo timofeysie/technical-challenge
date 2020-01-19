@@ -14,15 +14,15 @@ export interface CountryContext {
 @Injectable({
   providedIn: 'root'
 })
-export class QuoteService {
+export class CountryService {
   constructor(private httpClient: HttpClient) {}
 
-  getRandomQuote(context: CountryContext): Observable<string> {
+  getCountries(context: CountryContext): Observable<string> {
     return this.httpClient
       .cache()
       .get(routes.quote(context))
       .pipe(
-        map((body: any) => body.value),
+        map((body: any) => body),
         catchError(() => of('Error, could not load countries :-('))
       );
   }

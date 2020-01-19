@@ -1,30 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
-
-import { QuoteService } from './quote.service';
-
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { CountryService } from './country.service';
+import { ObservableInput } from 'rxjs';
+import { map, filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
+import { Logger } from '@app/core';
+const log = new Logger('HomeComponent');
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-  quote: string | undefined;
+export class HomeComponent implements OnInit, AfterViewInit {
+  errorMessage: string;
   isLoading = false;
+  countryName: AbstractControl;
+  countryForm: FormGroup;
+  countryResult: any;
+  constructor(fb: FormBuilder, private CountryService: CountryService) {
+    this.countryForm = fb.group({
+      countryName: []
+    });
+    this.countryName = this.countryForm.controls['countryName'];
+  }
 
-  constructor(private quoteService: QuoteService) {}
+  ngOnInit() {}
 
-  ngOnInit() {
-    this.isLoading = true;
-    this.quoteService
-      .getRandomQuote({ name: 'cal' })
+  ngAfterViewInit() {
+    this.countryName.valueChanges
       .pipe(
-        finalize(() => {
-          this.isLoading = false;
-        })
+        map(val => val),
+        filter((text: any) => text.length > 2),
+        debounceTime(10),
+        distinctUntilChanged(),
+        switchMap(() => this.submitQyery())
       )
-      .subscribe((quote: string) => {
-        this.quote = quote;
+      .subscribe(result => {
+        this.handleResult(result);
       });
+  }
+
+  submitQyery(): ObservableInput<any> {
+    this.isLoading = true;
+    return this.CountryService.getCountries({ name: this.countryName.value });
+  }
+
+  handleResult(result: any) {
+    this.isLoading = false;
+    if (typeof result === 'string') {
+      log.error('result', result);
+      this.errorMessage = result;
+      this.countryResult = null;
+    } else {
+      this.errorMessage = null;
+      this.countryResult = result;
+    }
   }
 }
