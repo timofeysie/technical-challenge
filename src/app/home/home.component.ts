@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onCountrySelected(country: any) {
     this.selectedCountry = country;
     if (!this.selectionHistory.includes(country)) {
-      this.selectionHistory.push(country);
+      this.selectionHistory.unshift(country);
     }
   }
 
