@@ -27,20 +27,6 @@ describe('CountryService', () => {
   });
 
   describe('getRandomQuote', () => {
-    it('should return a random Chuck Norris quote', () => {
-      // Arrange
-      const mockQuote = { value: 'a random quote' };
-
-      // Act
-      const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });
-
-      // Assert
-      randomQuoteSubscription.subscribe((quote: string) => {
-        expect(quote).toEqual(mockQuote.value);
-      });
-      httpMock.expectOne({}).flush(mockQuote);
-    });
-
     it('should return a string in case of error', () => {
       // Act
       const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });

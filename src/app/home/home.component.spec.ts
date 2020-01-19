@@ -6,7 +6,7 @@ import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { HomeComponent } from './home.component';
 import { CountryService } from './services/country.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -24,7 +24,7 @@ describe('HomeComponent', () => {
         FormsModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HomeComponent, FormGroup],
+      declarations: [HomeComponent],
       providers: [CountryService, { provide: FormBuilder, useValue: formBuilder }]
     }).compileComponents();
   }));
