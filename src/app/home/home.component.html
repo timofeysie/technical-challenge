@@ -7,15 +7,26 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-card class="ion-text-center">
-    <ion-card-content>
-      <ion-card-title>
-        <span translate>Country results</span>
-      </ion-card-title>
-      <p *ngIf="errorMessage">{{ errorMessage }}</p>
-      <p *ngFor="let country of countryResult">{{ country.name }} - {{ country.alpha2Code }}</p>
-    </ion-card-content>
-  </ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card class="ion-padding selectedCountries">
+          <p *ngIf="errorMessage">{{ errorMessage }}</p>
+          <div *ngFor="let country of countryResult">
+            <p (click)="selectCountry(country)">{{ country.name }} - {{ country.alpha2Code }}</p>
+          </div>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-row>
+          <app-history [selectionHistory]="selectionHistory"></app-history>
+        </ion-row>
+        <ion-row class="details">
+          <app-details [selectedCountry]="selectedCountry"></app-details>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <form [formGroup]="countryForm">
     <ion-item>
       <ion-label for="nameInput" position="stacked">Enter country name</ion-label>

@@ -1,0 +1,25 @@
+<ion-card class="ion-padding">
+  <ion-card-title>Country details</ion-card-title>
+  <ion-card-content>
+    <div *ngIf="selectedCountry">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <img class="flag" src="{{ selectedCountry.flag }}" alt="flag" />
+          </ion-col>
+          <ion-col>
+            {{ selectedCountry.name }}
+          </ion-col>
+        </ion-row>
+        <div>
+          {{ selectedCountry.currencies[0].code }}
+          {{ selectedCountry.currencies[0].name }}
+          {{ selectedCountry.currencies[0].symbol }}
+        </div>
+        <div>
+          lon: {{ selectedCountry.latlng[0] }} lat: {{ selectedCountry.latlng[1] }} area: {{ selectedCountry.area }}
+        </div>
+      </ion-grid>
+    </div>
+  </ion-card-content>
+</ion-card>

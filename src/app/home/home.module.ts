@@ -7,7 +7,9 @@ import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { CountryService } from './country.service';
+import { CountryService } from './services/country.service';
+import { HistoryComponent } from './presenters/history/history.component';
+import { DetailsComponent } from './presenters/details/details.component';
 
 @NgModule({
   imports: [
@@ -21,6 +23,6 @@ import { CountryService } from './country.service';
     HomeRoutingModule
   ],
   entryComponents: [HomeComponent],
-  declarations: [HomeComponent]
+  declarations: [HomeComponent, HistoryComponent, DetailsComponent]
 })
 export class HomeModule {}

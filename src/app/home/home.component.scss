@@ -1,9 +1,10 @@
-.logo {
-  width: 150px;
-  margin: 0 auto;
+.selectedCountries {
+  min-height: 352px;
 }
 
-q {
-  font-style: italic;
-  quotes: "« " " »";
+.details {
+  min-height: 190px;
+}
+ion-card {
+  min-width: 95%;
 }

@@ -2,22 +2,30 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { IonicModule } from '@ionic/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared';
 import { HomeComponent } from './home.component';
-import { CountryService } from './country.service';
+import { CountryService } from './services/country.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  const formBuilder: FormBuilder = new FormBuilder();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(), CoreModule, SharedModule, HttpClientTestingModule],
+      imports: [
+        IonicModule.forRoot(),
+        CoreModule,
+        SharedModule,
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        FormsModule
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [HomeComponent],
-      providers: [CountryService]
+      declarations: [HomeComponent, FormGroup],
+      providers: [CountryService, { provide: FormBuilder, useValue: formBuilder }]
     }).compileComponents();
   }));
 

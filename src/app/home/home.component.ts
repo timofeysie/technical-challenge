@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { CountryService } from './country.service';
+import { CountryService } from './services/country.service';
 import { ObservableInput } from 'rxjs';
 import { map, filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
@@ -11,12 +11,15 @@ const log = new Logger('HomeComponent');
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  selectionHistory: any[];
+  selectedCountry: any;
   errorMessage: string;
   isLoading = false;
   countryName: AbstractControl;
   countryForm: FormGroup;
   countryResult: any;
   constructor(fb: FormBuilder, private CountryService: CountryService) {
+    this.selectionHistory = [];
     this.countryForm = fb.group({
       countryName: []
     });
@@ -32,14 +35,20 @@ export class HomeComponent implements OnInit, AfterViewInit {
         filter((text: any) => text.length > 2),
         debounceTime(10),
         distinctUntilChanged(),
-        switchMap(() => this.submitQyery())
+        switchMap(() => this.submitQuery())
       )
       .subscribe(result => {
         this.handleResult(result);
       });
   }
 
-  submitQyery(): ObservableInput<any> {
+  selectCountry(country: any) {
+    this.selectedCountry = country;
+    this.selectionHistory.push(country);
+    console.log('selected', this.selectionHistory.length);
+  }
+
+  submitQuery(): ObservableInput<any> {
     this.isLoading = true;
     return this.CountryService.getCountries({ name: this.countryName.value });
   }
@@ -52,7 +61,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.countryResult = null;
     } else {
       this.errorMessage = null;
-      this.countryResult = result;
+      this.countryResult = result.slice(0, 9);
     }
   }
 }
