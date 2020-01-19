@@ -11,7 +11,7 @@
             {{ selectedCountry.name }}
           </ion-col>
         </ion-row>
-        <div>
+        <div *ngIf="selectedCountry.currencies">
           {{ selectedCountry.currencies[0].code }}
           {{ selectedCountry.currencies[0].name }}
           {{ selectedCountry.currencies[0].symbol }}

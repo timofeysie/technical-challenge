@@ -2,7 +2,7 @@
   <ion-card-title>History</ion-card-title>
   <ion-list lines="none">
     <div *ngFor="let item of selectionHistory">
-      {{ item.name }}
+      <div (click)="onCountrySelected(item)">{{ item.name }}</div>
     </div>
   </ion-list>
 </ion-card>

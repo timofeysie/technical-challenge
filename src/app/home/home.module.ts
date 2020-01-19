@@ -10,6 +10,7 @@ import { HomeComponent } from './home.component';
 import { CountryService } from './services/country.service';
 import { HistoryComponent } from './presenters/history/history.component';
 import { DetailsComponent } from './presenters/details/details.component';
+import { SearchComponent } from './presenters/search/search.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,6 @@ import { DetailsComponent } from './presenters/details/details.component';
     HomeRoutingModule
   ],
   entryComponents: [HomeComponent],
-  declarations: [HomeComponent, HistoryComponent, DetailsComponent]
+  declarations: [HomeComponent, HistoryComponent, DetailsComponent, SearchComponent]
 })
 export class HomeModule {}

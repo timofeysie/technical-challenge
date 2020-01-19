@@ -10,16 +10,14 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-card class="ion-padding selectedCountries">
-          <p *ngIf="errorMessage">{{ errorMessage }}</p>
-          <div *ngFor="let country of countryResult">
-            <p (click)="selectCountry(country)">{{ country.name }} - {{ country.alpha2Code }}</p>
-          </div>
-        </ion-card>
+        <app-search [countries]="countryResults" (selectCountry)="onCountrySelected($event)"></app-search>
       </ion-col>
       <ion-col>
         <ion-row>
-          <app-history [selectionHistory]="selectionHistory"></app-history>
+          <app-history
+            [selectionHistory]="selectionHistory"
+            (selectCountryFromHistory)="onCountrySelectedFromHistory($event)"
+          ></app-history>
         </ion-row>
         <ion-row class="details">
           <app-details [selectedCountry]="selectedCountry"></app-details>
@@ -33,7 +31,7 @@
       <ion-input
         type="text"
         id="nameInput"
-        placeholder="Country name"
+        placeholder="type at least three characters..."
         [formControl]="countryForm.controls['countryName']"
       ></ion-input>
     </ion-item>

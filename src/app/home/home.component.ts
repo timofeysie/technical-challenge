@@ -17,9 +17,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   isLoading = false;
   countryName: AbstractControl;
   countryForm: FormGroup;
-  countryResult: any;
+  countryResults: any;
   constructor(fb: FormBuilder, private CountryService: CountryService) {
     this.selectionHistory = [];
+    this.selectedCountry = null;
     this.countryForm = fb.group({
       countryName: []
     });
@@ -28,6 +29,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
+  /**
+   * Set up the country name value change subscription
+   * to implement the business rules for input length.
+   *
+   */
   ngAfterViewInit() {
     this.countryName.valueChanges
       .pipe(
@@ -42,10 +48,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
       });
   }
 
-  selectCountry(country: any) {
+  onCountrySelectedFromHistory(country: any) {
     this.selectedCountry = country;
-    this.selectionHistory.push(country);
-    console.log('selected', this.selectionHistory.length);
+  }
+
+  onCountrySelected(country: any) {
+    this.selectedCountry = country;
+    if (!this.selectionHistory.includes(country)) {
+      this.selectionHistory.push(country);
+    }
   }
 
   submitQuery(): ObservableInput<any> {
@@ -58,10 +69,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (typeof result === 'string') {
       log.error('result', result);
       this.errorMessage = result;
-      this.countryResult = null;
+      this.countryResults = null;
     } else {
       this.errorMessage = null;
-      this.countryResult = result.slice(0, 9);
+      this.countryResults = result.slice(0, 9);
     }
   }
 }
