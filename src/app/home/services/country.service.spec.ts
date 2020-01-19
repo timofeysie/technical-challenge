@@ -6,7 +6,7 @@ import { CoreModule, HttpCacheService } from '@app/core';
 import { CountryService } from './country.service';
 
 describe('CountryService', () => {
-  let CountryService: CountryService;
+  let countryService: CountryService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -15,7 +15,7 @@ describe('CountryService', () => {
       providers: [HttpCacheService, CountryService]
     });
 
-    CountryService = TestBed.get(CountryService);
+    countryService = TestBed.get(CountryService);
     httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
 
     const htttpCacheService = TestBed.get(HttpCacheService);
@@ -32,7 +32,7 @@ describe('CountryService', () => {
       const mockQuote = { value: 'a random quote' };
 
       // Act
-      const randomQuoteSubscription = CountryService.getCountries({ name: 'toto' });
+      const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {
@@ -43,7 +43,7 @@ describe('CountryService', () => {
 
     it('should return a string in case of error', () => {
       // Act
-      const randomQuoteSubscription = CountryService.getCountries({ name: 'toto' });
+      const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {

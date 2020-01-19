@@ -1,4 +1,4 @@
-<ion-card class="ion-padding selectedCountries">
+<ion-card class="ion-padding selected-countries">
   <p *ngIf="errorMessage">{{ errorMessage }}</p>
   <div *ngFor="let country of countries">
     <p (click)="onCountrySelected(country)">{{ country.name }} - {{ country.alpha2Code }}</p>

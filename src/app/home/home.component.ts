@@ -18,13 +18,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
   countryName: AbstractControl;
   countryForm: FormGroup;
   countryResults: any;
-  constructor(fb: FormBuilder, private CountryService: CountryService) {
+  constructor(fb: FormBuilder, private countryService: CountryService) {
     this.selectionHistory = [];
     this.selectedCountry = null;
     this.countryForm = fb.group({
       countryName: []
     });
-    this.countryName = this.countryForm.controls['countryName'];
+    // using a ver to avoid the lint error:
+    // this.countryForm.controls['countryName']
+    // doesn't work so disabling for now:
+    /* tslint:disable:no-string-literal */
+    const controlName = this.countryForm.controls['countryName'];
+    this.countryName = controlName;
+    /* tslint:enable:no-string-literal */
   }
 
   ngOnInit() {}
@@ -61,7 +67,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   submitQuery(): ObservableInput<any> {
     this.isLoading = true;
-    return this.CountryService.getCountries({ name: this.countryName.value });
+    return this.countryService.getCountries({ name: this.countryName.value });
   }
 
   handleResult(result: any) {
