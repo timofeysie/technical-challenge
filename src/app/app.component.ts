@@ -1,65 +1,85 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { merge } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
-
-import { environment } from '@env/environment';
-import { Logger, I18nService, untilDestroyed } from '@app/core';
-
-const log = new Logger('App');
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { CountryService } from './services/country.service';
+import { ObservableInput } from 'rxjs';
+import { map, filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private titleService: Title,
-    private translateService: TranslateService,
-    private i18nService: I18nService
-  ) {}
+export class AppComponent implements OnInit, AfterViewInit {
+  title = 'new-flare';
+  selectionHistory: any[];
+  selectedCountry: any;
+  errorMessage: string;
+  isLoading = false;
+  countryName: AbstractControl;
+  countryForm: FormGroup;
+  countryResults: any;
+  constructor(fb: FormBuilder, private countryService: CountryService) {
+    this.selectionHistory = [];
+    this.selectedCountry = null;
+    this.countryForm = fb.group({
+      countryName: []
+    });
+    // using a ver to avoid the lint error:
+    // this.countryForm.controls['countryName']
+    // doesn't work so disabling for now:
+    /* tslint:disable:no-string-literal */
+    //const controlName = this.countryForm.controls['countryName'];
+    //this.countryName = controlName;
+    /* tslint:enable:no-string-literal */
 
-  ngOnInit() {
-    // Setup logger
-    if (environment.production) {
-      Logger.enableProductionMode();
-    }
+    this.countryName = this.countryForm.controls['countryName'];
+  }
 
-    log.debug('init');
+  ngOnInit() {}
 
-    // Setup translations
-    this.i18nService.init(environment.defaultLanguage, environment.supportedLanguages);
-
-    const onNavigationEnd = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
-
-    // Change page title on navigation or language change, based on route data
-    merge(this.translateService.onLangChange, onNavigationEnd)
+  /**
+   * Set up the country name value change subscription
+   * to implement the business rules for input length.
+   *
+   */
+  ngAfterViewInit() {
+    this.countryName.valueChanges
       .pipe(
-        map(() => {
-          let route = this.activatedRoute;
-          while (route.firstChild) {
-            route = route.firstChild;
-          }
-          return route;
-        }),
-        filter(route => route.outlet === 'primary'),
-        switchMap(route => route.data),
-        untilDestroyed(this)
+        map(val => val),
+        filter((text: any) => text.length > 2),
+        debounceTime(10),
+        distinctUntilChanged(),
+        switchMap(() => this.submitQuery())
       )
-      .subscribe(event => {
-        const title = event.title;
-        if (title) {
-          this.titleService.setTitle(this.translateService.instant(title));
-        }
+      .subscribe(result => {
+        this.handleResult(result);
       });
   }
 
-  ngOnDestroy() {
-    this.i18nService.destroy();
+  onCountrySelectedFromHistory(country: any) {
+    this.selectedCountry = country;
+  }
+
+  onCountrySelected(country: any) {
+    this.selectedCountry = country;
+    if (!this.selectionHistory.includes(country)) {
+      this.selectionHistory.unshift(country);
+    }
+  }
+
+  submitQuery(): ObservableInput<any> {
+    this.isLoading = true;
+    return this.countryService.getCountries({ name: this.countryName.value });
+  }
+
+  handleResult(result: any) {
+    this.isLoading = false;
+    if (typeof result === 'string') {
+      this.errorMessage = result;
+      this.countryResults = null;
+    } else {
+      this.errorMessage = null;
+      this.countryResults = result.slice(0, 9);
+    }
   }
 }

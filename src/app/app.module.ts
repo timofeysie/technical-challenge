@@ -1,38 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
-
-import { environment } from '@env/environment';
-import { CoreModule } from '@app/core';
-import { SharedModule } from '@app/shared';
-import { HomeModule } from './home/home.module';
-import { ShellModule } from './shell/shell.module';
-import { AboutModule } from './about/about.module';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
+  declarations: [
+    AppComponent
+  ],
   imports: [
     BrowserModule,
-    ServiceWorkerModule.register('./ngsw-worker.js', { enabled: environment.production }),
     FormsModule,
-    HttpClientModule,
-    TranslateModule.forRoot(),
-    IonicModule.forRoot(),
-    CoreModule,
-    SharedModule,
-    ShellModule,
-    HomeModule,
-    AboutModule,
-    AppRoutingModule // must be imported as the last module as it contains the fallback route
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  declarations: [AppComponent],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas:   [ CUSTOM_ELEMENTS_SCHEMA ]
 })
-export class AppModule {}
+export class AppModule { }
