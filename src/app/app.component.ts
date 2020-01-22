@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CountryService } from './services/country.service';
-import { ObservableInput } from 'rxjs';
+import { ObservableInput, forkJoin, of } from 'rxjs';
 import { map, filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, AbstractControl } from '@angular/forms';
 
@@ -24,42 +24,46 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.countryForm = fb.group({
       countryName: []
     });
-    // using a ver to avoid the lint error:
-    // this.countryForm.controls['countryName']
-    // doesn't work so disabling for now:
-    /* tslint:disable:no-string-literal */
-    //const controlName = this.countryForm.controls['countryName'];
-    //this.countryName = controlName;
-    /* tslint:enable:no-string-literal */
-
+    /** Setup a variable to listen for changes in the input field. */
     this.countryName = this.countryForm.controls['countryName'];
   }
 
   ngOnInit() {}
 
   /**
-   * Set up the country name value change subscription
-   * to implement the business rules for input length.
-   *
+   * Pipe country name value changes as an observable and
+   * implement the business rules for input length.
+   * Also debounce and ignore out of sync results.
    */
   ngAfterViewInit() {
     this.countryName.valueChanges
       .pipe(
         map(val => val),
-        filter((text: any) => text.length > 2),
+        filter((text: any) => {
+          if (text.length <= 2) {
+            this.countryResults = [];
+          } else if (text.length > 2) {
+            return text;
+          }
+        }),
         debounceTime(10),
         distinctUntilChanged(),
-        switchMap(() => this.submitQuery())
+        switchMap(() => this.submitQueries())
       )
-      .subscribe(result => {
-        this.handleResult(result);
+      .subscribe(results => {
+        this.handleResult(results);
       });
   }
 
+  /**
+   * Populate the details component with a country chosen from the history component.
+   * @param country 
+   */
   onCountrySelectedFromHistory(country: any) {
     this.selectedCountry = country;
   }
 
+  /** Populate the details component with the chosen country from teh search results. */
   onCountrySelected(country: any) {
     this.selectedCountry = country;
     if (!this.selectionHistory.includes(country)) {
@@ -67,19 +71,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  submitQuery(): ObservableInput<any> {
+  /** Make two API calls and use forJoin to return both when complete. */
+  submitQueries(): ObservableInput<any> {
     this.isLoading = true;
-    return this.countryService.getCountries({ name: this.countryName.value });
+    let codes = this.countryService.getCountriesByCode({ code: this.countryName.value });
+    let countries = this.countryService.getCountriesByName({ name: this.countryName.value });
+   return forkJoin([codes, countries]);
   }
 
-  handleResult(result: any) {
+  /**
+   * 
+   * @param results array of codes and country results.
+   */
+  handleResult(results: any) {
     this.isLoading = false;
-    if (typeof result === 'string') {
-      this.errorMessage = result;
-      this.countryResults = null;
-    } else {
-      this.errorMessage = null;
-      this.countryResults = result.slice(0, 9);
-    }
+    let codes = results[0];
+    this.countryResults  = results[1].concat(codes);
   }
 }
