@@ -83,9 +83,29 @@ export class AppComponent implements OnInit, AfterViewInit {
    * 
    * @param results array of codes and country results.
    */
-  handleResult(results: any) {
+  handleResult(results: any []) {
     this.isLoading = false;
-    let codes = results[0];
-    this.countryResults  = results[1].concat(codes);
+    let codes = this.handleCodes(results[0]);
+    let countries = this.handleCountries(results[1]);
+    this.countryResults = countries.concat(codes); 
   }
+
+  handleCountries(countries: any) {
+    let result = [];
+    if (typeof countries === 'string') {
+      result.push(countries);
+    } else {
+      result = countries;
+    }
+    return result;
+  }
+
+  handleCodes(codes: any) {
+    let result = [];
+    if (typeof codes === 'string') {
+      result.push(codes);
+    }
+    return codes;
+  }
+
 }

@@ -1,17 +1,17 @@
   <ion-grid>
     <ion-row>
-      <ion-col>
+      <ion-col size-sm="6" size="12" class="ion-padding">
         <app-search [countries]="countryResults" (selectCountry)="onCountrySelected($event)"></app-search>
       </ion-col>
-      <ion-col>
+      <ion-col size-sm="6" size="12" class="ion-padding">
         <ion-row>
-          <app-history
+          <app-history class="history"
             [selectionHistory]="selectionHistory"
             (selectCountryFromHistory)="onCountrySelectedFromHistory($event)"
           ></app-history>
         </ion-row>
-        <ion-row class="details">
-          <app-details [selectedCountry]="selectedCountry"></app-details>
+        <ion-row>
+          <app-details class="details" [selectedCountry]="selectedCountry"></app-details>
         </ion-row>
       </ion-col>
     </ion-row>

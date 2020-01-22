@@ -1,11 +1,24 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { DetailsComponent } from './presenters/details/details.component';
+import { HistoryComponent } from './presenters/history/history.component';
+import { SearchComponent } from './presenters/search/search.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from  'ionic-angular';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule
+      ],
       declarations: [
-        AppComponent
+        AppComponent,
+        SearchComponent,
+        HistoryComponent,
+        DetailsComponent
       ],
     }).compileComponents();
   }));

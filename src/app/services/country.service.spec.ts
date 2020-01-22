@@ -24,12 +24,12 @@ describe('CountryService', () => {
 
   describe('getRandomQuote', () => {
 
-    it('should return a random Chuck Norris quote', () => {
+    it('should return a country object', () => {
       // Arrange
       const mockQuote ='a random quote' ;
 
       // Act
-      const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });
+      const randomQuoteSubscription = countryService.getCountriesByName({ name: 'moroco' });
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {
@@ -40,7 +40,7 @@ describe('CountryService', () => {
 
     it('should return a string in case of error', () => {
       // Act
-      const randomQuoteSubscription = countryService.getCountries({ name: 'toto' });
+      const randomQuoteSubscription = countryService.getCountriesByName({ name: 'toto' });
 
       // Assert
       randomQuoteSubscription.subscribe((quote: string) => {
